@@ -430,7 +430,6 @@ int mainlb(integer *n, integer *m, double *x,
     --r__;
     --z__;
     --x;
-    --wa;
     snd_dim1 = 2 * *m;
     snd_offset = 1 + snd_dim1;
     snd -= snd_offset;
@@ -555,8 +554,6 @@ int mainlb(integer *n, integer *m, double *x,
         stp = dsave[14];
         gdold = dsave[15];
         dtd = dsave[16];
-        /*        After returning from the driver go to the point where execution */
-        /*        is to resume. */
         if ( *task == FG_LN ) {
             goto L666;
         }
@@ -615,8 +612,8 @@ L222:
     info = 0;
     cauchy(n, &x[1], l, u, nbd, &g[1], indx2, iwhere, t, 
 	&d__[1], &z__[1], m, &wy[wy_offset], &ws[ws_offset], &sy[
-            sy_offset], &wt[wt_offset], &theta, &col, &head, &wa[1], &wa[(*m 
-                << 1) + 1], &wa[(*m << 2) + 1], &wa[*m * 6 + 1], &nseg, iprint, &
+            sy_offset], &wt[wt_offset], &theta, &col, &head, wa, &wa[(*m 
+                << 1)], &wa[(*m << 2)], &wa[*m * 6], &nseg, iprint, &
             sbgnrm, &info, &epsmch);
     if (info != 0) {
         /*         singular triangular system detected; refresh the lbfgs memory. */
@@ -680,14 +677,14 @@ L333:
     /*        compute r=-Z'B(xcp-xk)-Z'g (using wa(2m+1)=W'(xcp-x) */
     /*                                                   from 'cauchy'). */
     cmprlb(n, m, &x[1], &g[1], &ws[ws_offset], &wy[wy_offset], &sy[sy_offset]
-            , &wt[wt_offset], &z__[1], &r__[1], &wa[1], index, &theta, &
+            , &wt[wt_offset], &z__[1], &r__[1], wa, index, &theta, &
             col, &head, &nfree, &cnstnd, &info);
     if (info != 0) {
         goto L444;
     }
     /* -jlm-jn   call the direct method. */
     subsm(n, m, &nfree, index, l, u, nbd, &z__[1], &r__[1], xp, &ws[ws_offset], &wy[wy_offset], &theta, &x[1], &g[1], &col,
-            &head, &iword, &wa[1], &wn[wn_offset], iprint, &info);
+            &head, &iword, wa, &wn[wn_offset], iprint, &info);
 L444:
     if (info != 0) {
         /*          singular triangular system detected; */
