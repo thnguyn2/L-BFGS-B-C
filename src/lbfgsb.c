@@ -425,11 +425,7 @@ int mainlb(integer *n, integer *m, double *x,
     */
 
     /* Parameter adjustments */
-    --indx2;
-    --iwhere;
-    --index;
     --xp;
-    --t;
     --g;
     --d__;
     --r__;
@@ -503,11 +499,9 @@ int mainlb(integer *n, integer *m, double *x,
         lnscht = 0.;
         /*           'word' records the status of subspace solutions. */
         *word = WORD_DEFAULT;
-/*         s_copy(word, "---", (ftnlen)3, (ftnlen)3); */
         /*           'info' records the termination information. */
         info = 0;
         itfile = 8;
-        /* Note: no longer trying to write to file */
         /*        Check the input arguments for errors. */
         errclb(n, m, factr, l, u, nbd, task, &info, &k, (ftnlen)
                 60);
@@ -519,7 +513,7 @@ int mainlb(integer *n, integer *m, double *x,
             return 0;
         }
         prn1lb(n, m, l, u, &x[1], iprint, o__1, &epsmch); 
-        active(n, l, u, nbd, &x[1], &iwhere[1], iprint, &prjctd, 
+        active(n, l, u, nbd, &x[1], iwhere, iprint, &prjctd, 
                 &cnstnd, &boxed);
         /*        The end of the initialization. */
     } else {
@@ -576,7 +570,7 @@ int mainlb(integer *n, integer *m, double *x,
         if ( IS_STOP(*task) ) {
             if ( *task == STOP_CPU ) {
                 /*    restore the previous iterate. */
-                dcopy(n, &t[1], &c__1, &x[1], &c__1);
+                dcopy(n, t, &c__1, &x[1], &c__1);
                 dcopy(n, &r__[1], &c__1, &g[1], &c__1);
                 *f = fold;
             }
@@ -620,8 +614,8 @@ L222:
     /* ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc */
     timer(&cpu1);
     info = 0;
-    cauchy(n, &x[1], l, u, nbd, &g[1], &indx2[1], &iwhere[1], &t[
-            1], &d__[1], &z__[1], m, &wy[wy_offset], &ws[ws_offset], &sy[
+    cauchy(n, &x[1], l, u, nbd, &g[1], indx2, iwhere, t, 
+	&d__[1], &z__[1], m, &wy[wy_offset], &ws[ws_offset], &sy[
             sy_offset], &wt[wt_offset], &theta, &col, &head, &wa[1], &wa[(*m 
                 << 1) + 1], &wa[(*m << 2) + 1], &wa[*m * 6 + 1], &nseg, iprint, &
             sbgnrm, &info, &epsmch);
@@ -642,7 +636,7 @@ L222:
     nintol += nseg;
     /*     Count the entering and leaving variables for iter > 0; */
     /*     find the index set of free and active variables at the GCP. */
-    freev(n, &nfree, &index[1], &nenter, &ileave, &indx2[1], &iwhere[1], &
+    freev(n, &nfree, index, &nenter, &ileave, indx2, iwhere, &
             wrk, &updatd, &cnstnd, iprint, &iter);
     nact = *n - nfree;
 L333:
@@ -663,7 +657,7 @@ L333:
     /*       where     E = [-I  0] */
     /*                     [ 0  I] */
     if (wrk) {
-        formk(n, &nfree, &index[1], &nenter, &ileave, &indx2[1], &iupdat, &
+        formk(n, &nfree, index, &nenter, &ileave, indx2, &iupdat, &
                 updatd, &wn[wn_offset], &snd[snd_offset], m, &ws[ws_offset], &
                 wy[wy_offset], &sy[sy_offset], &theta, &col, &head, &info);
     }
@@ -687,13 +681,13 @@ L333:
     /*        compute r=-Z'B(xcp-xk)-Z'g (using wa(2m+1)=W'(xcp-x) */
     /*                                                   from 'cauchy'). */
     cmprlb(n, m, &x[1], &g[1], &ws[ws_offset], &wy[wy_offset], &sy[sy_offset]
-            , &wt[wt_offset], &z__[1], &r__[1], &wa[1], &index[1], &theta, &
+            , &wt[wt_offset], &z__[1], &r__[1], &wa[1], index, &theta, &
             col, &head, &nfree, &cnstnd, &info);
     if (info != 0) {
         goto L444;
     }
     /* -jlm-jn   call the direct method. */
-    subsm(n, m, &nfree, &index[1], l, u, nbd, &z__[1], &r__[1], &
+    subsm(n, m, &nfree, index, l, u, nbd, &z__[1], &r__[1], &
             xp[1], &ws[ws_offset], &wy[wy_offset], &theta, &x[1], &g[1], &col,
             &head, &iword, &wa[1], &wn[wn_offset], iprint, &info);
 L444:
@@ -731,12 +725,12 @@ L555:
     timer(&cpu1);
 L666:
     lnsrlb(n, l, u, nbd, &x[1], f, &fold, &gd, &gdold, &g[1], &
-            d__[1], &r__[1], &t[1], &z__[1], &stp, &dnorm, &dtd, &xstep, &
+            d__[1], &r__[1], t, &z__[1], &stp, &dnorm, &dtd, &xstep, &
             stpmx, &iter, &ifun, &iback, &nfgv, &info, task, &boxed, &cnstnd, 
             csave, &isave[22], &dsave[17]); /* (ftnlen)60, (ftnlen)60); */
     if (info != 0 || iback >= 20) {
         /*          restore the previous iterate. */
-        dcopy(n, &t[1], &c__1, &x[1], &c__1);
+        dcopy(n, t, &c__1, &x[1], &c__1);
         dcopy(n, &r__[1], &c__1, g, &c__1);
         *f = fold;
         if (col == 0) {
