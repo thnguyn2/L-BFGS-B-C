@@ -172,19 +172,7 @@ int setulb(integer *n, integer *m, double *x,
       optimization problems'', Tech. Report, NAM-11, EECS Department, 
       Northwestern University, 1994.*/
  
-    /* Parameter adjustments */
-    --iwa;
-    --g;
-    --nbd;
-    --u;
-    --l;
-    --x;
     --wa;
-    --lsave;
-    --isave;
-    --dsave;
-
-    /* Function Body */
     if ( *task == START ) {
         isave[1] = *m * *n;
         i__1 = *m;
@@ -231,11 +219,11 @@ int setulb(integer *n, integer *m, double *x,
     lt = isave[14];
     lxp = isave[15];
     lwa = isave[16];
-    mainlb(n, m, &x[1], &l[1], &u[1], &nbd[1], f, &g[1], factr, pgtol, &wa[
+    mainlb(n, m, x, l, u, nbd, f, g, factr, pgtol, &wa[
             lws], &wa[lwy], &wa[lsy], &wa[lss], &wa[lwt], &wa[lwn], &wa[lsnd],
-            &wa[lz], &wa[lr], &wa[ld], &wa[lt], &wa[lxp], &wa[lwa], &iwa[1], 
-            &iwa[*n + 1], &iwa[(*n << 1) + 1], task, iprint, csave, &lsave[1],
-            &isave[22], &dsave[1]);
+            &wa[lz], &wa[lr], &wa[ld], &wa[lt], &wa[lxp], &wa[lwa], iwa, 
+            &iwa[*n], &iwa[(*n << 1)], task, iprint, csave, lsave,
+            &isave[21], dsave);
     return 0;
 } /* setulb_ */
 
@@ -442,13 +430,10 @@ int mainlb(integer *n, integer *m, double *x,
     --index;
     --xp;
     --t;
+    --g;
     --d__;
     --r__;
     --z__;
-    --g;
-    --nbd;
-    --u;
-    --l;
     --x;
     --wa;
     snd_dim1 = 2 * *m;
@@ -524,7 +509,7 @@ int mainlb(integer *n, integer *m, double *x,
         itfile = 8;
         /* Note: no longer trying to write to file */
         /*        Check the input arguments for errors. */
-        errclb(n, m, factr, &l[1], &u[1], &nbd[1], task, &info, &k, (ftnlen)
+        errclb(n, m, factr, l, u, nbd, task, &info, &k, (ftnlen)
                 60);
         if ( IS_ERROR(*task) ){
             prn3lb(n, &x[1], f, task, iprint, &info, o__1, &iter, &nfgv, &
@@ -533,8 +518,8 @@ int mainlb(integer *n, integer *m, double *x,
                         ftnlen)60, (ftnlen)3);
             return 0;
         }
-        prn1lb(n, m, &l[1], &u[1], &x[1], iprint, o__1, &epsmch); 
-        active(n, &l[1], &u[1], &nbd[1], &x[1], &iwhere[1], iprint, &prjctd, 
+        prn1lb(n, m, l, u, &x[1], iprint, o__1, &epsmch); 
+        active(n, l, u, nbd, &x[1], &iwhere[1], iprint, &prjctd, 
                 &cnstnd, &boxed);
         /*        The end of the initialization. */
     } else {
@@ -605,7 +590,7 @@ int mainlb(integer *n, integer *m, double *x,
 L111:
     nfgv = 1;
     /*     Compute the infinity norm of the (-) projected gradient. */
-    projgr(n, &l[1], &u[1], &nbd[1], &x[1], &g[1], &sbgnrm);
+    projgr(n, l, u, nbd, &x[1], &g[1], &sbgnrm);
     if (*iprint >= 1) {
         printf("At iterate %5ld, f(x)= %5.2e, ||proj grad||_infty = %.2e\n",iter,*f,sbgnrm );
     }
@@ -635,7 +620,7 @@ L222:
     /* ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc */
     timer(&cpu1);
     info = 0;
-    cauchy(n, &x[1], &l[1], &u[1], &nbd[1], &g[1], &indx2[1], &iwhere[1], &t[
+    cauchy(n, &x[1], l, u, nbd, &g[1], &indx2[1], &iwhere[1], &t[
             1], &d__[1], &z__[1], m, &wy[wy_offset], &ws[ws_offset], &sy[
             sy_offset], &wt[wt_offset], &theta, &col, &head, &wa[1], &wa[(*m 
                 << 1) + 1], &wa[(*m << 2) + 1], &wa[*m * 6 + 1], &nseg, iprint, &
@@ -708,7 +693,7 @@ L333:
         goto L444;
     }
     /* -jlm-jn   call the direct method. */
-    subsm(n, m, &nfree, &index[1], &l[1], &u[1], &nbd[1], &z__[1], &r__[1], &
+    subsm(n, m, &nfree, &index[1], l, u, nbd, &z__[1], &r__[1], &
             xp[1], &ws[ws_offset], &wy[wy_offset], &theta, &x[1], &g[1], &col,
             &head, &iword, &wa[1], &wn[wn_offset], iprint, &info);
 L444:
@@ -745,14 +730,14 @@ L555:
     }
     timer(&cpu1);
 L666:
-    lnsrlb(n, &l[1], &u[1], &nbd[1], &x[1], f, &fold, &gd, &gdold, &g[1], &
+    lnsrlb(n, l, u, nbd, &x[1], f, &fold, &gd, &gdold, &g[1], &
             d__[1], &r__[1], &t[1], &z__[1], &stp, &dnorm, &dtd, &xstep, &
             stpmx, &iter, &ifun, &iback, &nfgv, &info, task, &boxed, &cnstnd, 
             csave, &isave[22], &dsave[17]); /* (ftnlen)60, (ftnlen)60); */
     if (info != 0 || iback >= 20) {
         /*          restore the previous iterate. */
         dcopy(n, &t[1], &c__1, &x[1], &c__1);
-        dcopy(n, &r__[1], &c__1, &g[1], &c__1);
+        dcopy(n, &r__[1], &c__1, g, &c__1);
         *f = fold;
         if (col == 0) {
             /*             abnormal termination. */
@@ -795,7 +780,7 @@ L666:
         lnscht = lnscht + cpu2 - cpu1;
         ++iter;
         /*        Compute the infinity norm of the projected (-)gradient. */
-        projgr(n, &l[1], &u[1], &nbd[1], &x[1], &g[1], &sbgnrm);
+        projgr(n, l, u, nbd, &x[1], &g[1], &sbgnrm);
         /*        Print iteration information. */
 
 
@@ -933,4 +918,3 @@ L1000:
     dsave[16] = dtd;
     return 0;
 } /* mainlb */
-
