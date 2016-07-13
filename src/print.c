@@ -6,38 +6,13 @@ int prn1lb(integer *n, integer *m, double *l,
 {
     /*
     ************ 
-
-    Subroutine prn1lb 
-
     This subroutine prints the input data, initial point, upper and 
       lower bounds of each variable, machine precision, as well as 
       the headings of the output. 
-
-
-                          *  *  * 
-
-    NEOS, November 1994. (Latest revision June 1996.) 
-    Optimization Technology Center. 
-    Argonne National Laboratory and Northwestern University. 
-    Written by 
-                       Ciyou Zhu 
-    in collaboration with R.H. Byrd, P. Lu-Chen and J. Nocedal. 
-
-
-        ************ 
     */
-    /* System generated locals */
     integer i__1;
-
-    /* Local variables */
     static integer i__;
 
-    /* Parameter adjustments */
-    --x;
-    --u;
-    --l;
-
-    /* Function Body */
     if (*iprint >= 0) {
         printf("           * * *\n");
         printf("        RUNNING THE L-BFGS-B CODE\n");
@@ -48,19 +23,19 @@ int prn1lb(integer *n, integer *m, double *l,
             if (*iprint > 100) {
                 printf("L  =");
                 i__1 = *n;
-                for (i__ = 1; i__ <= i__1; ++i__) {
+                for (i__ = 0; i__ < i__1; ++i__) {
                     printf("%.2e ", l[i__] );
                 }
                 printf("\n");
                 printf("X0 =");
                 i__1 = *n;
-                for (i__ = 1; i__ <= i__1; ++i__) {
+                for (i__ = 0; i__ < i__1; ++i__) {
                     printf("%.2e ", x[i__] );
                 }
                 printf("\n");
                 printf("U  =");
                 i__1 = *n;
-                for (i__ = 1; i__ <= i__1; ++i__) {
+                for (i__ = 0; i__ < i__1; ++i__) {
                     printf("%.2e ", u[i__] );
                 }
                 printf("\n");
@@ -162,32 +137,14 @@ int prn3lb(integer *n, double *x, double *f, integer *
 {
     /*
     ************ 
-
-    Subroutine prn3lb 
-
     This subroutine prints out information when either a built-in 
       convergence test is satisfied or when an error message is 
       generated. 
-
-
-                          *  *  * 
-
-    NEOS, November 1994. (Latest revision June 1996.) 
-    Optimization Technology Center. 
-    Argonne National Laboratory and Northwestern University. 
-    Written by 
-                       Ciyou Zhu 
-    in collaboration with R.H. Byrd, P. Lu-Chen and J. Nocedal. 
-
-
     ************ 
     */
-    /* System generated locals */
     integer i__1;
-
     /* Local variables */
     static integer i__;
-    /* Parameter adjustments */
     --x;
 
     /* Function Body */
