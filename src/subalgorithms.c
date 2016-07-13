@@ -4,59 +4,30 @@ static integer c__1 = 1;
 /* Table of constant values */
 static integer c__11 = 11;
 
-/* Subroutine */ int active(integer *n, double *l, double *u, 
+int active(integer *n, double *l, double *u, 
 	integer *nbd, double *x, integer *iwhere, integer *iprint, 
 	logical *prjctd, logical *cnstnd, logical *boxed)
 {
-    /* System generated locals */
     integer i__1;
-
-    /* Local variables */
     static integer i__, nbdd;
 
-
 /*     ************ */
-
-/*     Subroutine active */
-
 /*     This subroutine initializes iwhere and projects the initial x to */
 /*       the feasible set if necessary. */
-
 /*     iwhere is an integer array of dimension n. */
 /*       On entry iwhere is unspecified. */
 /*       On exit iwhere(i)=-1  if x(i) has no bounds */
 /*                         3   if l(i)=u(i) */
 /*                         0   otherwise. */
 /*       In cauchy, iwhere is given finer gradations. */
-
-
 /*                           *  *  * */
-
-/*     NEOS, November 1994. (Latest revision June 1996.) */
-/*     Optimization Technology Center. */
-/*     Argonne National Laboratory and Northwestern University. */
-/*     Written by */
-/*                        Ciyou Zhu */
-/*     in collaboration with R.H. Byrd, P. Lu-Chen and J. Nocedal. */
-
-
 /*     ************ */
-/*     Initialize nbdd, prjctd, cnstnd and boxed. */
-    /* Parameter adjustments */
-    --iwhere;
-    --x;
-    --nbd;
-    --u;
-    --l;
-
-    /* Function Body */
     nbdd = 0;
     *prjctd = FALSE_;
     *cnstnd = FALSE_;
     *boxed = TRUE_;
 /*     Project the initial x to the easible set if necessary. */
-    i__1 = *n;
-    for (i__ = 1; i__ <= i__1; ++i__) {
+    for (i__ = 0; i__ < *n; ++i__) {
 	if (nbd[i__] > 0) {
 	    if (nbd[i__] <= 2 && x[i__] <= l[i__]) {
 		if (x[i__] < l[i__]) {
@@ -72,28 +43,22 @@ static integer c__11 = 11;
 		++nbdd;
 	    }
 	}
-/* L10: */
     }
 /*     Initialize iwhere and assign values to cnstnd and boxed. */
-    i__1 = *n;
-    for (i__ = 1; i__ <= i__1; ++i__) {
+    for (i__ = 0; i__ < *n; ++i__) {
 	if (nbd[i__] != 2) {
 	    *boxed = FALSE_;
 	}
 	if (nbd[i__] == 0) {
-/*                                this variable is always free */
 	    iwhere[i__] = -1;
-/*           otherwise set x(i)=mid(x(i), u(i), l(i)). */
 	} else {
 	    *cnstnd = TRUE_;
 	    if (nbd[i__] == 2 && u[i__] - l[i__] <= 0.) {
-/*                   this variable is always fixed */
 		iwhere[i__] = 3;
 	    } else {
 		iwhere[i__] = 0;
 	    }
 	}
-/* L20: */
     }
     if (*iprint >= 0) {
 	if (*prjctd) {
@@ -108,14 +73,6 @@ static integer c__11 = 11;
     }
     return 0;
 } /* active */
-/* ======================= The end of active ============================= */
-
-
-
-
-
-
-
 
 /* Subroutine */ int bmv(integer *m, double *sy, double *wt, integer 
 	*col, double *v, double *p, integer *info)
