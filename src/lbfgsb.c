@@ -172,14 +172,13 @@ int setulb(integer *n, integer *m, double *x,
       optimization problems'', Tech. Report, NAM-11, EECS Department, 
       Northwestern University, 1994.*/
  
-    --wa;
     if ( *task == START ) {
         isave[1] = *m * *n;
         i__1 = *m;
         isave[2] = i__1 * i__1;
         i__1 = *m;
         isave[3] = i__1 * i__1 << 2;
-        isave[4] = 1;
+        isave[4] = 0; //Zero-indexing for the wa array
         /* ws      m*n */
         isave[5] = isave[4] + isave[1];
         /* wy      m*n */
