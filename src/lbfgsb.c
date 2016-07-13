@@ -681,7 +681,6 @@ L333:
     if (info != 0) {
         goto L444;
     }
-    /* -jlm-jn   call the direct method. */
     subsm(n, m, &nfree, index, l, u, nbd, &z__[1], &r__[1], xp, &ws[ws_offset], &wy[wy_offset], &theta, &x[1], &g[1], &col,
             &head, &iword, wa, &wn[wn_offset], iprint, &info);
 L444:
@@ -721,7 +720,7 @@ L666:
     lnsrlb(n, l, u, nbd, &x[1], f, &fold, &gd, &gdold, &g[1], &
             d__[1], &r__[1], t, &z__[1], &stp, &dnorm, &dtd, &xstep, &
             stpmx, &iter, &ifun, &iback, &nfgv, &info, task, &boxed, &cnstnd, 
-            csave, &isave[22], &dsave[17]); /* (ftnlen)60, (ftnlen)60); */
+            csave, &isave[22], &dsave[17]); 
     if (info != 0 || iback >= 20) {
         /*          restore the previous iterate. */
         dcopy(n, t, &c__1, &x[1], &c__1);
@@ -770,9 +769,6 @@ L666:
         /*        Compute the infinity norm of the projected (-)gradient. */
         projgr(n, l, u, nbd, &x[1], &g[1], &sbgnrm);
         /*        Print iteration information. */
-
-
-
         prn2lb(n, &x[1], f, &g[1], iprint, o__1, &iter, &nfgv, &nact, &
                 sbgnrm, &nseg, word, &iword, &iback, &stp, &xstep, (ftnlen)3);
         goto L1000;
