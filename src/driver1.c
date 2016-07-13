@@ -209,12 +209,9 @@ int main(void)
     static integer m, n;
     static double u[1024], x[1024], t1, t2, wa[43251];
     static integer nbd[1024], iwa[3072];
-/*     static char task[60]; */
     static integer taskValue;
     static integer *task=&taskValue; /* must initialize !! */
-/*      http://stackoverflow.com/a/11278093/269192 */
     static double factr;
-/*     static char csave[60]; */
     static integer csaveValue;
     static integer *csave=&csaveValue;
     static double dsave[29];
@@ -222,7 +219,6 @@ int main(void)
     static logical lsave[4];
     static double pgtol;
     static integer iprint;
-
 
 /*
     This simple driver demonstrates how to call the L-BFGS-B code to 
@@ -234,12 +230,10 @@ int main(void)
     Declare the variables needed by the code. 
       A description of all these variables is given at the end of 
       the driver. 
-    Declare a few additional variables for this sample problem. 
  */
 
 /*     We wish to have output at every iteration. */
     iprint = 1; 
-/*     iprint = 101; */
 /*     We specify the tolerances in the stopping criteria. */
     factr = 1e7;
     pgtol = 1e-5;
@@ -269,66 +263,48 @@ int main(void)
     i__1 = n;
     for (i__ = 1; i__ <= i__1; ++i__) {
         x[i__ - 1] = 3.;
-        /* L14: */
     }
     printf("     Solving sample problem (Rosenbrock test fcn).\n");
     printf("      (f = 0.0 at the optimal solution.)\n");
 
     /*     We start the iteration by initializing task. */
-
     *task = (integer)START;
-/*     s_copy(task, "START", (ftnlen)60, (ftnlen)5); */
     /*        ------- the beginning of the loop ---------- */
 L111:
     /*     This is the call to the L-BFGS-B code. */
     setulb(&n, &m, x, l, u, nbd, &f, g, &factr, &pgtol, wa, iwa, task, &
-            iprint, csave, lsave, isave, dsave);
-/*     if (s_cmp(task, "FG", (ftnlen)2, (ftnlen)2) == 0) { */
+           iprint, csave, lsave, isave, dsave);
     if ( IS_FG(*task) ) {
-        /*        the minimization routine has returned to request the */
-        /*        function f and gradient g values at the current x. */
-        /*        Compute function value f for the sample problem. */
-        /* Computing 2nd power */
-        d__1 = x[0] - 1.;
+	//Computing the function f
+	d__1 = x[0] - 1.;
         f = d__1 * d__1 * .25;
         i__1 = n;
         for (i__ = 2; i__ <= i__1; ++i__) {
-            /* Computing 2nd power */
             d__2 = x[i__ - 2];
-            /* Computing 2nd power */
             d__1 = x[i__ - 1] - d__2 * d__2;
             f += d__1 * d__1;
         }
         f *= 4.;
+
         /*        Compute gradient g for the sample problem. */
-        /* Computing 2nd power */
         d__1 = x[0];
         t1 = x[1] - d__1 * d__1;
         g[0] = (x[0] - 1.) * 2. - x[0] * 16. * t1;
         i__1 = n - 1;
         for (i__ = 2; i__ <= i__1; ++i__) {
             t2 = t1;
-            /* Computing 2nd power */
             d__1 = x[i__ - 1];
             t1 = x[i__] - d__1 * d__1;
             g[i__ - 1] = t2 * 8. - x[i__ - 1] * 16. * t1;
-            /* L22: */
         }
         g[n - 1] = t1 * 8.;
-        /*          go back to the minimization routine. */
-        goto L111;
+        goto L111;//Go back to the new minimization routine
     }
 
-/*     if (s_cmp(task, "NEW_X", (ftnlen)5, (ftnlen)5) == 0) { */
     if ( *task==NEW_X ) {
         goto L111;
     }
-    /*        the minimization routine has returned with a new iterate, */
-    /*         and we have opted to continue the iteration. */
-    /*           ---------- the end of the loop ------------- */
     /*     If task is neither FG nor NEW_X we terminate execution. */
-    //s_stop("", (ftnlen)0);
     return 0;
 } /* MAIN__ */
 
-///* Main program alias */ int driver_ () { MAIN__ (); return 0; }

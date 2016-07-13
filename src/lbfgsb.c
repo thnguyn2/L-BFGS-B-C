@@ -3,17 +3,7 @@ static integer c__1 = 1;
 
 
 /*
- L-BFGS-B is released under the "New BSD License" (aka "Modified BSD License" 
- or "3-clause license") 
- Please read attached file License.txt 
-
 ===========   L-BFGS-B (version 3.0.  April 25, 2011  =================== 
-
-    This is a modified version of L-BFGS-B. Minor changes in the updated 
-    code appear preceded by a line comment as follows 
-
-    c-jlm-jn 
-
     Major changes are described in the accompanying paper: 
 
         Jorge Nocedal and Jose Luis Morales, Remark on "Algorithm 778: 
@@ -21,67 +11,36 @@ static integer c__1 = 1;
         Optimization"  (2011). To appear in  ACM Transactions on 
         Mathematical Software, 
 
-    The paper describes an improvement and a correction to Algorithm 778. 
-    It is shown that the performance of the algorithm can be improved 
-    significantly by making a relatively simple modication to the subspace 
-    minimization phase. The correction concerns an error caused by the use 
-    of routine dpmeps to estimate machine precision. 
-
     The total work space **wa** required by the new version is 
-
                  2*m*n + 11m*m + 5*n + 8*m 
-
     the old version required 
-
                  2*m*n + 12m*m + 4*n + 12*m 
-
-
-           J. Nocedal  Department of Electrical Engineering and 
-                       Computer Science. 
-                       Northwestern University. Evanston, IL. USA 
-
-
-          J.L Morales  Departamento de Matematicas, 
-                       Instituto Tecnologico Autonomo de Mexico 
-                       Mexico D.F. Mexico. 
-
-                       March  2011 
    */
 
 /* ============================================================================= */
-/* Subroutine */ int setulb(integer *n, integer *m, double *x, 
+int setulb(integer *n, integer *m, double *x, 
 	double *l, double *u, integer *nbd, double *f, double 
 	*g, double *factr, double *pgtol, double *wa, integer *
 	iwa, integer *task, integer *iprint, integer *csave, logical *lsave, 
 	integer *isave, double *dsave) /* ftnlen task_len, ftnlen csave_len) */
 {
-    /* System generated locals */
     integer i__1;
 
-
-    /* Local variables */
     static integer ld, lr, lt, lz, lwa, lwn, lss, lxp, lws, lwt, lsy, lwy, 
 	    lsnd;
 
-/* -jlm-jn */
     /*
     ************ 
-
-    Subroutine setulb 
-
     This subroutine partitions the working arrays wa and iwa, and 
       then uses the limited memory BFGS method to solve the bound 
       constrained optimization problem by calling mainlb. 
       (The direct method will be used in the subspace minimization.) 
 
-    n is an integer variable. 
-      On entry n is the dimension of the problem. 
-      On exit n is unchanged. 
+    n is an integer variable, correspond to the dimension of the problem. 
 
     m is an integer variable. 
       On entry m is the maximum number of variable metric corrections 
         used to define the limited memory matrix. 
-      On exit m is unchanged. 
 
     x is a double precision array of dimension n. 
       On entry x is an approximation to the solution. 
@@ -89,11 +48,9 @@ static integer c__1 = 1;
 
     l is a double precision array of dimension n. 
       On entry l is the lower bound on x. 
-      On exit l is unchanged. 
 
     u is a double precision array of dimension n. 
       On entry u is the upper bound on x. 
-      On exit u is unchanged. 
 
     nbd is an integer array of dimension n. 
       On entry nbd represents the type of bounds imposed on the 
@@ -115,7 +72,6 @@ static integer c__1 = 1;
     factr is a double precision variable. 
       On entry factr >= 0 is specified by the user.  The iteration 
         will stop when 
-
         (f^k - f^{k+1})/max{|f^k|,|f^{k+1}|,1} <= factr*epsmch 
 
         where epsmch is the machine precision, which is automatically 
@@ -127,7 +83,6 @@ static integer c__1 = 1;
     pgtol is a double precision variable. 
       On entry pgtol >= 0 is specified by the user.  The iteration 
         will stop when 
-
                 max{|proj g_i | i = 1, ..., n} <= pgtol 
 
         where pg_i is the ith component of the projected gradient. 
@@ -151,9 +106,7 @@ static integer c__1 = 1;
        iprint>100  print details of every iteration including x and g; 
       When iprint > 0, the file iterate.dat will be created to 
                        summarize the iteration. 
-
     csave is a working string of characters of length 60. 
-
     lsave is a logical working array of dimension 4. 
       On exit with 'task' = NEW_X, the following information is 
                                                             available: 
@@ -162,7 +115,6 @@ static integer c__1 = 1;
         If lsave(2) = .true.  then  the problem is constrained; 
         If lsave(3) = .true.  then  each variable has upper and lower 
                                     bounds; 
-
     isave is an integer working array of dimension 44. 
       On exit with 'task' = NEW_X, the following information is 
                                                             available: 
@@ -198,29 +150,19 @@ static integer c__1 = 1;
         dsave(3) = factr*epsmch; 
         dsave(4) = 2-norm of the line search direction vector; 
         dsave(5) = the machine precision epsmch generated by the code; 
-        dsave(7) = the accumulated time spent on searching for 
-                                                        Cauchy points; 
-        dsave(8) = the accumulated time spent on 
-                                                subspace minimization; 
+        dsave(7) = the accumulated time spent on searching for Cauchy points; 
+        dsave(8) = the accumulated time spent on subspace minimization; 
         dsave(9) = the accumulated time spent on line search; 
-        dsave(11) = the slope of the line search function at 
-                                 the current point of line search; 
-        dsave(12) = the maximum relative step length imposed in 
-                                                          line search; 
+        dsave(11) = the slope of the line search function at the current point of line search; 
+        dsave(12) = the maximum relative step length imposed in line search; 
         dsave(13) = the infinity norm of the projected gradient; 
         dsave(14) = the relative step length in the line search; 
-        dsave(15) = the slope of the line search function at 
-                                the starting point of the line search; 
-        dsave(16) = the square of the 2-norm of the line search 
-                                                     direction vector. 
-
+        dsave(15) = the slope of the line search function at the starting point of the line search; 
+        dsave(16) = the square of the 2-norm of the line search direction vector. 
     Subprograms called: 
-
-      L-BFGS-B Library ... mainlb. 
-
+       mainlb. 
 
     References: 
-
       [1] R. H. Byrd, P. Lu, J. Nocedal and C. Zhu, ``A limited 
       memory algorithm for bound constrained optimization'', 
       SIAM J. Scientific Computing 16 (1995), no. 5, pp. 1190--1208. 
@@ -228,24 +170,8 @@ static integer c__1 = 1;
       [2] C. Zhu, R.H. Byrd, P. Lu, J. Nocedal, ``L-BFGS-B: a 
       limited memory FORTRAN code for solving bound constrained 
       optimization problems'', Tech. Report, NAM-11, EECS Department, 
-      Northwestern University, 1994. 
-
-      (Postscript files of these papers are available via anonymous 
-       ftp to eecs.nwu.edu in the directory pub/lbfgs/lbfgs_bcm.) 
-
-                          *  *  * 
-
-    NEOS, November 1994. (Latest revision June 1996.) 
-    Optimization Technology Center. 
-    Argonne National Laboratory and Northwestern University. 
-    Written by 
-                       Ciyou Zhu 
-    in collaboration with R.H. Byrd, P. Lu-Chen and J. Nocedal. 
-
-
-    ************ 
-    */
-/* -jlm-jn */
+      Northwestern University, 1994.*/
+ 
     /* Parameter adjustments */
     --iwa;
     --g;
@@ -261,10 +187,8 @@ static integer c__1 = 1;
     /* Function Body */
     if ( *task == START ) {
         isave[1] = *m * *n;
-        /* Computing 2nd power */
         i__1 = *m;
         isave[2] = i__1 * i__1;
-        /* Computing 2nd power */
         i__1 = *m;
         isave[3] = i__1 * i__1 << 2;
         isave[4] = 1;
@@ -311,31 +235,23 @@ static integer c__1 = 1;
             lws], &wa[lwy], &wa[lsy], &wa[lss], &wa[lwt], &wa[lwn], &wa[lsnd],
             &wa[lz], &wa[lr], &wa[ld], &wa[lt], &wa[lxp], &wa[lwa], &iwa[1], 
             &iwa[*n + 1], &iwa[(*n << 1) + 1], task, iprint, csave, &lsave[1],
-            &isave[22], &dsave[1]); /* (ftnlen)60, (ftnlen)60); */
+            &isave[22], &dsave[1]);
     return 0;
 } /* setulb_ */
 
-
-
 /* Table of constant values */
-
 static double c_b7 = 0.;
-/* SRB: note that task_len is no longer used since task
- * is now integer* not char*.
- * Similarly for csave (now integer*) and so csave_len not used */
 
-/* Subroutine */ int mainlb(integer *n, integer *m, double *x, 
+int mainlb(integer *n, integer *m, double *x, 
 	double *l, double *u, integer *nbd, double *f, double 
 	*g, double *factr, double *pgtol, double *ws, double *
 	wy, double *sy, double *ss, double *wt, double *wn, 
 	double *snd, double *z__, double *r__, double *d__, 
 	double *t, double *xp, double *wa, integer *index, 
 	integer *iwhere, integer *indx2, integer *task, integer *iprint, 
-    integer *csave, logical *lsave, integer *isave, double *dsave) /*(ftnlen ) */
-/* 	task_len, ftnlen csave_len) */
+    integer *csave, logical *lsave, integer *isave, double *dsave)
 {
 
-    /* System generated locals */
     integer ws_dim1, ws_offset, wy_dim1, wy_offset, sy_dim1, sy_offset, 
 	    ss_dim1, ss_offset, wt_dim1, wt_offset, wn_dim1, wn_offset, 
 	    snd_dim1, snd_offset, i__1=0;
@@ -382,23 +298,17 @@ static double c_b7 = 0.;
     static double lnscht;
     static integer nintol;
 
-/* -jlm-jn */
-/*     ************ */
-
 /*
     Subroutine mainlb 
-
     This subroutine solves bound constrained optimization problems by 
       using the compact formula of the limited memory BFGS updates. 
 
     n is an integer variable. 
       On entry n is the number of variables. 
-      On exit n is unchanged. 
 
     m is an integer variable. 
       On entry m is the maximum number of variable metric 
          corrections allowed in the limited memory matrix. 
-      On exit m is unchanged. 
 
     x is a double precision array of dimension n. 
       On entry x is an approximation to the solution. 
@@ -513,57 +423,19 @@ static double c_b7 = 0.;
                        summarize the iteration. 
 
     csave is a working string of characters of length 60. 
-
     lsave is a logical working array of dimension 4. 
-
     isave is an integer working array of dimension 23. 
-
     dsave is a double precision working array of dimension 29. 
 
-
     Subprograms called 
-
       L-BFGS-B Library ... cauchy, subsm, lnsrlb, formk, 
-
        errclb, prn1lb, prn2lb, prn3lb, active, projgr, 
-
        freev, cmprlb, matupd, formt. 
-
       Minpack2 Library ... timer 
-
       Linpack Library ... dcopy, ddot. 
 
-
-    References: 
-
-      [1] R. H. Byrd, P. Lu, J. Nocedal and C. Zhu, ``A limited 
-      memory algorithm for bound constrained optimization'', 
-      SIAM J. Scientific Computing 16 (1995), no. 5, pp. 1190--1208. 
-
-      [2] C. Zhu, R.H. Byrd, P. Lu, J. Nocedal, ``L-BFGS-B: FORTRAN 
-      Subroutines for Large Scale Bound Constrained Optimization'' 
-      Tech. Report, NAM-11, EECS Department, Northwestern University, 
-      1994. 
-
-      [3] R. Byrd, J. Nocedal and R. Schnabel "Representations of 
-      Quasi-Newton Matrices and their use in Limited Memory Methods'', 
-      Mathematical Programming 63 (1994), no. 4, pp. 129-156. 
-
-      (Postscript files of these papers are available via anonymous 
-       ftp to eecs.nwu.edu in the directory pub/lbfgs/lbfgs_bcm.) 
-
-                          *  *  * 
-
-    NEOS, November 1994. (Latest revision June 1996.) 
-    Optimization Technology Center. 
-    Argonne National Laboratory and Northwestern University. 
-    Written by 
-                       Ciyou Zhu 
-    in collaboration with R.H. Byrd, P. Lu-Chen and J. Nocedal. 
     */
 
-
-/*     ************ */
     /* Parameter adjustments */
     --indx2;
     --iwhere;
