@@ -425,7 +425,6 @@ int mainlb(integer *n, integer *m, double *x,
     */
 
     /* Parameter adjustments */
-    --xp;
     --g;
     --d__;
     --r__;
@@ -687,8 +686,7 @@ L333:
         goto L444;
     }
     /* -jlm-jn   call the direct method. */
-    subsm(n, m, &nfree, index, l, u, nbd, &z__[1], &r__[1], &
-            xp[1], &ws[ws_offset], &wy[wy_offset], &theta, &x[1], &g[1], &col,
+    subsm(n, m, &nfree, index, l, u, nbd, &z__[1], &r__[1], xp, &ws[ws_offset], &wy[wy_offset], &theta, &x[1], &g[1], &col,
             &head, &iword, &wa[1], &wn[wn_offset], iprint, &info);
 L444:
     if (info != 0) {
